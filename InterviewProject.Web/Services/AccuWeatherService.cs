@@ -1,7 +1,7 @@
-﻿using InterviewProject.Controllers;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json.Nodes;
@@ -15,20 +15,29 @@ namespace InterviewProject.Services
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
 
-        public AccuWeatherService(IConfiguration configuration, ILogger logger)
+        public AccuWeatherService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _logger = logger;
             _client = new HttpClient
             {
                 BaseAddress = new Uri("http://dataservice.accuweather.com/")
             };
+            using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
+            _logger = factory.CreateLogger<AccuWeatherService>();
+        }
+
+        private string GetApiKey ()
+        {
+            StreamReader sr = new(_configuration.GetValue<string>("ApiKeyDoc"));
+            string apiKey = sr.ReadLine();
+            sr.Close();
+            return apiKey;
         }
 
         public async Task<string> GetLocationAsync(string location)
         {
             string path = _configuration.GetValue<string>("UrlPath:Location");
-            string apikey = _configuration.GetValue<string>("AuthKey");
+            string apikey = GetApiKey();
             string lang = _configuration.GetValue<string>("DefaultLanguage");
 
             HttpResponseMessage response = await _client.GetAsync($"{path}?apikey={apikey}&q={location}&language={lang}");
@@ -51,7 +60,7 @@ namespace InterviewProject.Services
         public async Task<JsonArray> GetFiveDayForecastByLocation(string locationKey)
         {
             string path = _configuration.GetValue<string>("UrlPath:ForecastFiveDay");
-            string apikey = _configuration.GetValue<string>("AuthKey");
+            string apikey = GetApiKey();
             string lang = _configuration.GetValue<string>("DefaultLanguage");
 
             HttpResponseMessage response = await _client.GetAsync($"{path}/{locationKey}?apikey={apikey}&language={lang}");
