@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using InterviewProject.Services;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json.Nodes;
+using System.Collections.Generic;
+using InterviewProject.Models;
 
 namespace InterviewProject.Controllers
 {
@@ -31,7 +33,12 @@ namespace InterviewProject.Controllers
             {
                 return BadRequest($"No se pudo obtener la información del tiempo para 5 día para la locación {cityName}");
             }
-            return Ok(forecast);
+            List<WeatherForecast> result = accuWeather.SetForecastResponse(forecast, cityName);
+            if (result == null)
+            {
+                return BadRequest($"No se pudo parsear la información obtenida para la locación {cityName}");
+            }
+            return Ok(result);
         }
     }
 }
