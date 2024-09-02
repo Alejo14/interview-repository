@@ -12,10 +12,6 @@ namespace InterviewProject.Controllers
     [Route("[controller]")]
     public class WeatherForecastController(IConfiguration configuration) : ControllerBase
     {
-        private static readonly string[] Summaries = [
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        ];
-
         private readonly IConfiguration _configuration = configuration;
 
         [HttpGet]

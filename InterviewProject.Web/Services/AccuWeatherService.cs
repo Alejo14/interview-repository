@@ -76,8 +76,8 @@ namespace InterviewProject.Services
                     Wind = wind,
                     Precipitation = precipitation,
                     RelativeHumidity = humidity,
-                    ShortPhrase = node["ShortPhrase"].ToString(),
-                    IconPhrase = node["IconPhrase"].ToString()
+                    Summary = node["ShortPhrase"].ToString(),
+                    Icon = node["IconPhrase"].ToString()
                 };
             }
             else if(className == "night")
@@ -88,8 +88,8 @@ namespace InterviewProject.Services
                     Wind = wind,
                     Precipitation = precipitation,
                     RelativeHumidity = humidity,
-                    ShortPhrase = node["ShortPhrase"].ToString(),
-                    IconPhrase = node["IconPhrase"].ToString()
+                    Summary = node["ShortPhrase"].ToString(),
+                    Icon = node["IconPhrase"].ToString()
                 };
             }
             else
@@ -157,7 +157,7 @@ namespace InterviewProject.Services
                     temperature.MinimumF = minTemps["F"];
                     temperature.MinimumC = minTemps["C"];
 
-                    WeatherForecast weatherForecast = new WeatherForecast
+                    WeatherForecast weatherForecast = new()
                     {
                         Date = DateTime.Parse(forecast["Date"].ToString()),
                         Day = day,

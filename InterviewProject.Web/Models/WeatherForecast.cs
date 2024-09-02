@@ -23,8 +23,8 @@ namespace InterviewProject.Models
 
     public class Day
     {
-        public string ShortPhrase { get; set; }
-        public string IconPhrase {  get; set; }
+        public string Summary { get; set; }
+        public string Icon {  get; set; }
         public Wind Wind { get; set; }
         public Humidity RelativeHumidity { get; set; }
         public Precipitation Precipitation { get; set; }
@@ -33,8 +33,8 @@ namespace InterviewProject.Models
 
     public class Night
     {
-        public string ShortPhrase { get; set; }
-        public string IconPhrase { get; set; }
+        public string Summary { get; set; }
+        public string Icon { get; set; }
         public Wind Wind { get; set; }
         public Humidity RelativeHumidity { get; set; }
         public Precipitation Precipitation { get; set; }
