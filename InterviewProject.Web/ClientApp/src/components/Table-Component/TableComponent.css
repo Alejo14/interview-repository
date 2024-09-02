@@ -1,3 +1,7 @@
 table {
     text-align: center;
 }
+
+.cell:hover {
+    cursor: pointer;
+}

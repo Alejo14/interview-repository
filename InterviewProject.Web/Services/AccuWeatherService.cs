@@ -42,9 +42,9 @@ namespace InterviewProject.Services
             Wind wind = new()
             {
                 WindSpeed = node["Wind"]["Speed"]["Value"].ToString() + " " + node["Wind"]["Speed"]["Unit"].ToString(),
-                WindDirection = node["Wind"]["Direction"]["Degrees"].ToString() + " " + node["Wind"]["Direction"]["Localized"].ToString(),
+                WindDirection = node["Wind"]["Direction"]["Degrees"].ToString() + "° " + node["Wind"]["Direction"]["Localized"].ToString(),
                 WindGustSpeed = node["WindGust"]["Speed"]["Value"].ToString() + " " + node["WindGust"]["Speed"]["Unit"].ToString(),
-                WindGustDirection = node["WindGust"]["Direction"]["Degrees"].ToString() + " " + node["WindGust"]["Direction"]["Localized"].ToString(),
+                WindGustDirection = node["WindGust"]["Direction"]["Degrees"].ToString() + "° " + node["WindGust"]["Direction"]["Localized"].ToString(),
             };
             Humidity humidity = new()
             {
@@ -58,11 +58,11 @@ namespace InterviewProject.Services
                 HasPrecipitation = hasPrecipitation,
                 PrecipitationType = hasPrecipitation ? node["PrecipitationType"].ToString() : "No Precipitation",
                 PrecipitationIntensity = hasPrecipitation ? node["PrecipitationIntensity"].ToString() : string.Empty,
-                PrecipitationProbability = node["PrecipitationProbability"].ToString(),
-                ThunderstormProbability = node["ThunderstormProbability"].ToString(),
-                RainProbability = node["RainProbability"].ToString(),
-                SnowProbability = node["SnowProbability"].ToString(),
-                IceProbability = node["IceProbability"].ToString(),
+                PrecipitationProbability = node["PrecipitationProbability"].ToString() + "%",
+                ThunderstormProbability = node["ThunderstormProbability"].ToString() + "%",
+                RainProbability = node["RainProbability"].ToString() + "%",
+                SnowProbability = node["SnowProbability"].ToString() + "%",
+                IceProbability = node["IceProbability"].ToString() + "%",
                 HoursOfPrecipitation = node["HoursOfPrecipitation"].ToString(),
                 HoursOfRain = node["HoursOfRain"].ToString(),
                 HoursOfIce = node["HoursOfIce"].ToString(),
@@ -72,7 +72,7 @@ namespace InterviewProject.Services
             {
                 return new Day()
                 {
-                    CloudCover = node["CloudCover"].ToString(),
+                    CloudCover = node["CloudCover"].ToString() + "%",
                     Wind = wind,
                     Precipitation = precipitation,
                     RelativeHumidity = humidity,
@@ -84,7 +84,7 @@ namespace InterviewProject.Services
             {
                 return new Night()
                 {
-                    CloudCover = node["CloudCover"].ToString(),
+                    CloudCover = node["CloudCover"].ToString() + "%",
                     Wind = wind,
                     Precipitation = precipitation,
                     RelativeHumidity = humidity,
@@ -105,24 +105,24 @@ namespace InterviewProject.Services
             {
                 case "F":
                     temperatures.Add("F", value.ToString() + " °F");
-                    double tempFtoK = (value - 32) * (5 / 9) + 273.15;
-                    double tempFtoC = (value - 32) * (5 / 9);
-                    temperatures.Add("K", tempFtoK.ToString() + " K");
-                    temperatures.Add("C", tempFtoC.ToString() + " °C");
+                    double tempFtoK = (value - 32) * 0.56 + 273.15;
+                    double tempFtoC = (value - 32) * 0.56;
+                    temperatures.Add("K", double.Round(tempFtoK, 2).ToString() + " K");
+                    temperatures.Add("C", double.Round(tempFtoC, 2).ToString() + " °C");
                     break;
                 case "K":
                     temperatures.Add("K", value.ToString() + " K");
-                    double tempKtoF = (value - 273.15) * (9 / 5) + 32;
+                    double tempKtoF = (value - 273.15) * 1.8 + 32;
                     double tempKtoC = value - 273.15;
-                    temperatures.Add("F", tempKtoF.ToString() + " °F");
-                    temperatures.Add("C", tempKtoC.ToString() + " °C");
+                    temperatures.Add("F", double.Round(tempKtoF, 2).ToString() + " °F");
+                    temperatures.Add("C", double.Round(tempKtoC, 2).ToString() + " °C");
                     break;
                 case "C":
                     temperatures.Add("C", value.ToString() + " °C");
-                    double tempCtoF = value * (9 / 5) + 32;
+                    double tempCtoF = value * 1.8 + 32;
                     double tempCtoK = value + 273.15;
-                    temperatures.Add("F", tempCtoF.ToString() + " °F");
-                    temperatures.Add("K", tempCtoK.ToString() + " K");
+                    temperatures.Add("F", double.Round(tempCtoF, 2).ToString() + " °F");
+                    temperatures.Add("K", double.Round(tempCtoK, 2).ToString() + " K");
                     break;
                 default:
                     break;

@@ -1,11 +1,11 @@
 import React from 'react';
 import "./TableComponent.css";
 
-const TableComponent = ({ headers, data, hasError, errorMsg }) => {
+const TableComponent = ({ headers, data, hasError, errorMsg, callBackClick }) => {
     return (
         !hasError ? 
             <div className="table-responsive">
-                <table className="table table-sm">
+                <table className="table table-sm table-striped table-hover">
                     <thead>
                         <tr>
                             { headers.map(header => <th key={header.name}>{header.displayName}</th>) }
@@ -13,8 +13,8 @@ const TableComponent = ({ headers, data, hasError, errorMsg }) => {
                     </thead>
                     <tbody>
                         { data.map((row, index) => 
-                            <tr key={"entry_" + index}>
-                                {Object.entries(row).map(([key, value]) => <th key={key + "_" + index}>{value}</th>)}
+                            <tr key={"entry_" + index} onClick={() => callBackClick(index)}>
+                                {Object.entries(row).map(([key, value]) => <th className='cell' key={key + "_" + index}>{value}</th>)}
                             </tr>
                         )}
                     </tbody>

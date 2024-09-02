@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TableComponent from './Table-Component/TableComponent';
+import CardComponent from './Card-Component/CardComponent';
 import './Weather.css';
 
 const Weather = () => {
@@ -11,11 +12,11 @@ const Weather = () => {
   const [isDay, setIsDay] = useState(true);
   const [hasError, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  
+  const [index, setIndex] = useState(0);
+
   const validateLocation = (location) => {
     const regex = /(?:^|\s)[\s\\\/"\:';,.\-\_()*+{}[\]|'?¿¡!°¬\^#%&\$<>=]+(?:$|\s)/gi
     const newLocation = location.replace(regex, "");
-    console.log(newLocation);
     if(newLocation === "") {
       alert("No location was entered");
       return false;
@@ -109,6 +110,10 @@ const Weather = () => {
     setLocation((location) => location = value);
   }
 
+  const handleCallback = (newIndex) => {
+    setIndex((index) => index = newIndex);
+  }
+
   useEffect(() => {
     const validatedLocation = validateLocation(location);
     if(validatedLocation) {
@@ -139,7 +144,8 @@ const Weather = () => {
           !loading ? 
             <div>
               <h2>{weather.length === 0 ? "" : weather[0].location}</h2>
-              <TableComponent headers={headers} data={data} hasError={hasError} errorMsg={errorMsg}></TableComponent>
+              <TableComponent headers={headers} data={data} hasError={hasError} errorMsg={errorMsg} callBackClick={handleCallback}></TableComponent>
+              { weather.length !== 0 ? <CardComponent weather={weather} index={index} isDay={isDay}></CardComponent>: <></> }
             </div>
           : 
             <p><em>Laoding...</em></p>

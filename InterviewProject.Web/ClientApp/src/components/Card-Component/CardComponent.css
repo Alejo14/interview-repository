@@ -1,0 +1,93 @@
+section {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    align-items: center;
+}
+
+#title {
+    margin-right: 30px;
+    padding: 10px;
+    border-right: 1px dashed rgb(109, 109, 109);
+    max-width: 20%;
+    height: 100%;
+}
+
+p {
+    margin: 5px;
+    font-size: 1em;
+}
+
+.details {
+    width: 100%;
+}
+
+.box {
+    justify-content: space-evenly;
+    border-bottom: 1px dashed rgb(109, 109, 109);
+    padding-bottom: 20px;
+}
+
+.card {
+    text-align: center;
+    box-shadow: 5px 5px 1px black;
+    border-radius: 10px;
+    width: 150px;
+    flex-wrap: wrap; 
+}
+
+.precipitation-card {
+    background: linear-gradient(rgba(47, 47, 211, 0.7), rgba(135, 135, 226, 0.7), rgba(246, 246, 255, 0.7)) !important;
+    gap: 10px;
+    padding: 5px;
+}
+
+.precipitation-card > p {
+    margin: 0;
+}
+
+.porcentage {
+    font-weight: bolder;
+    font-size: 1.2rem;
+}
+
+#moreDetails {
+    margin-top: 20px;
+    padding: 10px 10px 20px 10px;
+    justify-content: space-around;
+}
+
+#moreDetails > div > p {
+    font-weight: bolder;
+    text-align: center;
+}
+
+.wind {
+    border-radius: 10px;
+    box-shadow: 5px 5px 1px black;
+    background: linear-gradient(rgba(93, 242, 255, 0.803), rgb(144, 226, 254));
+    padding: 5px;
+}
+
+.humidity-container p,
+.wind p {
+    margin: 0;
+    text-align: center;
+}
+
+.wind-container {
+    gap: 10px;
+}
+
+.humidity-container {
+    border-radius: 10px;
+    background: linear-gradient(rgba(143, 191, 253, 0.803), rgb(227, 248, 255));
+    box-shadow: 5px 5px 1px black;
+    padding: 5px;
+}
+
+.temperature-container {
+    border-radius: 10px;
+    background: linear-gradient(rgba(255, 188, 72, 0.921), rgb(255, 236, 158));
+    box-shadow: 5px 5px 1px black;
+    padding: 5px;
+}
