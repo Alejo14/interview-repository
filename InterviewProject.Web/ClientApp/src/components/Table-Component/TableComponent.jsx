@@ -8,13 +8,13 @@ const TableComponent = ({ headers, data, hasError, errorMsg, callBackClick }) =>
                 <table className="table table-sm table-striped table-hover">
                     <thead>
                         <tr>
-                            { headers.map(header => <th key={header.name}>{header.displayName}</th>) }
+                            { headers.map(header => <th key={header.name} id={header.name}>{header.displayName}</th>) }
                         </tr>
                     </thead>
                     <tbody>
                         { data.map((row, index) => 
-                            <tr key={"entry_" + index} onClick={() => callBackClick(index)}>
-                                {Object.entries(row).map(([key, value]) => <th className='cell' key={key + "_" + index}>{value}</th>)}
+                            <tr id={index} key={"entry_" + index} onClick={() => callBackClick(index)}>
+                                {Object.entries(row).map(([key, value]) => <td className='cell' id={key + "_" + index} key={key + "_" + index}>{value}</td>)}
                             </tr>
                         )}
                     </tbody>
