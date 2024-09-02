@@ -7,26 +7,37 @@ const Weather = () => {
   const [headers, setHeaders] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [location, setLocations] = useState("newyork");
+  const [location, setLocation] = useState("New York");
   const [isDay, setIsDay] = useState(true);
   const [hasError, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   
+  const validateLocation = (location) => {
+    const regex = /(?:^|\s)[\s\\\/"\:';,.\-\_()*+{}[\]|'?¿¡!°¬\^#%&\$<>=]+(?:$|\s)/gi
+    const newLocation = location.replace(regex, "");
+    console.log(newLocation);
+    if(newLocation === "") {
+      alert("No location was entered");
+      return false;
+    }
+    return newLocation;
+  }
+
   const formatName = (regex) => (name) => {
     const aux = name.replace(regex, (match) => " " + match);
     return aux.slice(0, 1).toUpperCase() + aux.slice(1);
   };
 
-  const getTableInformation = (forecast) => {
+  const getTableInformation = (forecast, isDay) => {
     const allEntries = Object.entries(forecast).filter((el) => el[0] !== "day" && el[0] !== "night" && el[0] !== "location");
     const dayOrNightEntries = isDay ? Object.entries(forecast.day) : Object.entries(forecast.night);
     allEntries.splice(1, 0, ...dayOrNightEntries.filter(el => el[0] !== "icon"));
     return allEntries;
   }
 
-  const tableHeaders = (forecast) => {
+  const tableHeaders = (forecast, isDay) => {
     const upperRegex = /[A-Z]/;
-    const entries = getTableInformation(forecast);
+    const entries = getTableInformation(forecast, isDay);
     const newHeaders = entries.map(entry => entry[0]).map(el => {
       const displayName = formatName(upperRegex)(el);
       return { name: el, displayName }
@@ -34,8 +45,8 @@ const Weather = () => {
     setHeaders((headers) => headers = [... newHeaders]);
   }
 
-  const tableData = (forecasts) => {
-    const entries = forecasts.map(forecast => Object.fromEntries(getTableInformation(forecast)));
+  const tableData = (forecasts, isDay) => {
+    const entries = forecasts.map(forecast => Object.fromEntries(getTableInformation(forecast, isDay)));
     entries.forEach(entry => {
       entry.date = entry.date.split("T")[0];
       entry.precipitation = `${entry.precipitation.hasPrecipitation ? entry.precipitation.precipitationIntensity + " " : ""}${entry.precipitation.precipitationType}`;
@@ -45,50 +56,64 @@ const Weather = () => {
     });
     setData((data) => data = [...entries]);
   }
+
+  const resetError = () => {
+    setError((hasError) => hasError = false);
+    setErrorMsg((errorMsg) => errorMsg = "");
+  }
+
+  const displayError = (err) => {
+    setError((hasError) => hasError = true);
+    setErrorMsg((errorMsg) => errorMsg = "Please standby! An error occurred and the team is looking at it at the moment. Please retry later!");
+    setWeather((weather) => weather = []);
+    console.error(err);
+  }
   
-  const processData = async () => {
+  const processData = async (location) => {
     setLoading((loading) => loading = true);
     try {
+      resetError();
       const apiResponse = await fetch(`weatherforecast/GetFiveDayForecast?city=${location}`);
       const content = await apiResponse.json();
-      tableHeaders(content[0]);
-      tableData(content);
+      tableHeaders(content[0], isDay);
+      tableData(content, isDay);
       setWeather((weather) => weather = [...content]);
     } catch (err) {
-      setError((hasError) => hasError = true);
-      setErrorMsg((errorMsg) => errorMsg = "Please standby! An error occurred and the team is looking at it at the moment. Please retry later!");
-      console.error(err);
+      displayError(err);
     }
     setLoading((loading) => loading = false);
   }
 
   const handlekeyDown = (key, target) => {
     if(key === "Enter") {
-      setLocations((location) => location = target.value);
+      setLocation((location) => location = target.value);
     }
   }
 
   const handleChange = () => {
     setLoading((loading) => loading = true);
-    setIsDay(isDay => isDay = !isDay);
+    const currentTime = !isDay;
+    setIsDay(isDay => isDay = currentTime);
     try {
-      tableHeaders(weather[0]);
-      tableData(weather);
+      resetError();
+      tableHeaders(weather[0], currentTime);
+      tableData(weather, currentTime);
     } catch (err) {
-      setError((hasError) => hasError = true);
-      setErrorMsg((errorMsg) => errorMsg = "Please standby! An error occurred and the team is looking at it at the moment. Please retry later!");
-      console.error(err);
+      displayError(err);
     }
     setLoading((loading) => loading = false);
   }
 
   const handleClick = () => {
     const value = document.getElementById("search").value;
-    setLocations((location) => location = value);
+    setLocation((location) => location = value);
   }
 
   useEffect(() => {
-    processData();
+    const validatedLocation = validateLocation(location);
+    if(validatedLocation) {
+      processData(validatedLocation);
+    }
   }, [location])
 
   return (
@@ -112,7 +137,10 @@ const Weather = () => {
           </div>
         {
           !loading ? 
-            <TableComponent headers={headers} data={data} hasError={hasError} errorMsg={errorMsg}></TableComponent>
+            <div>
+              <h2>{weather.length === 0 ? "" : weather[0].location}</h2>
+              <TableComponent headers={headers} data={data} hasError={hasError} errorMsg={errorMsg}></TableComponent>
+            </div>
           : 
             <p><em>Laoding...</em></p>
         }
