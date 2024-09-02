@@ -1,0 +1,125 @@
+import React, { useEffect, useState } from 'react';
+import TableComponent from './Table-Component/TableComponent';
+import './Weather.css';
+
+const Weather = () => {
+  const [weather, setWeather] = useState([]);
+  const [headers, setHeaders] = useState([]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [location, setLocations] = useState("newyork");
+  const [isDay, setIsDay] = useState(true);
+  const [hasError, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  
+  const formatName = (regex) => (name) => {
+    const aux = name.replace(regex, (match) => " " + match);
+    return aux.slice(0, 1).toUpperCase() + aux.slice(1);
+  };
+
+  const getTableInformation = (forecast) => {
+    const allEntries = Object.entries(forecast).filter((el) => el[0] !== "day" && el[0] !== "night" && el[0] !== "location");
+    const dayOrNightEntries = isDay ? Object.entries(forecast.day) : Object.entries(forecast.night);
+    allEntries.splice(1, 0, ...dayOrNightEntries.filter(el => el[0] !== "icon"));
+    return allEntries;
+  }
+
+  const tableHeaders = (forecast) => {
+    const upperRegex = /[A-Z]/;
+    const entries = getTableInformation(forecast);
+    const newHeaders = entries.map(entry => entry[0]).map(el => {
+      const displayName = formatName(upperRegex)(el);
+      return { name: el, displayName }
+    });
+    setHeaders((headers) => headers = [... newHeaders]);
+  }
+
+  const tableData = (forecasts) => {
+    const entries = forecasts.map(forecast => Object.fromEntries(getTableInformation(forecast)));
+    entries.forEach(entry => {
+      entry.date = entry.date.split("T")[0];
+      entry.precipitation = `${entry.precipitation.hasPrecipitation ? entry.precipitation.precipitationIntensity + " " : ""}${entry.precipitation.precipitationType}`;
+      entry.relativeHumidity = entry.relativeHumidity.average;
+      entry.temperature = `Min. ${entry.temperature.minimumF} & Max. ${entry.temperature.maximumF}`;
+      entry.wind = `${entry.wind.windSpeed} ${entry.wind.windDirection}`;
+    });
+    setData((data) => data = [...entries]);
+  }
+  
+  const processData = async () => {
+    setLoading((loading) => loading = true);
+    try {
+      const apiResponse = await fetch(`weatherforecast/GetFiveDayForecast?city=${location}`);
+      const content = await apiResponse.json();
+      tableHeaders(content[0]);
+      tableData(content);
+      setWeather((weather) => weather = [...content]);
+    } catch (err) {
+      setError((hasError) => hasError = true);
+      setErrorMsg((errorMsg) => errorMsg = "Please standby! An error occurred and the team is looking at it at the moment. Please retry later!");
+      console.error(err);
+    }
+    setLoading((loading) => loading = false);
+  }
+
+  const handlekeyDown = (key, target) => {
+    if(key === "Enter") {
+      setLocations((location) => location = target.value);
+    }
+  }
+
+  const handleChange = () => {
+    setLoading((loading) => loading = true);
+    setIsDay(isDay => isDay = !isDay);
+    try {
+      tableHeaders(weather[0]);
+      tableData(weather);
+    } catch (err) {
+      setError((hasError) => hasError = true);
+      setErrorMsg((errorMsg) => errorMsg = "Please standby! An error occurred and the team is looking at it at the moment. Please retry later!");
+      console.error(err);
+    }
+    setLoading((loading) => loading = false);
+  }
+
+  const handleClick = () => {
+    const value = document.getElementById("search").value;
+    setLocations((location) => location = value);
+  }
+
+  useEffect(() => {
+    processData();
+  }, [location])
+
+  return (
+    <section className='background-section'>
+      <div className={!isDay ? "background-night" : "background-day"}></div>
+      <div>
+        <h1 id="tabelLabel" >Weather forecast</h1>
+        <p>This component demonstrates fetching data from the server.</p>
+        <search className="d-flex flex-column">
+          <div className="d-flex align-items-center mb-4">
+            <div className="input-group flex-nowrap mr-2">
+              <input className="form-control" id="search" type="search" placeholder="Buscar por ciudad" onKeyDown={({key, target}) => handlekeyDown(key, target)} />
+              <div className="input-group-append">
+                <span id="search-btn" className="input-group-text" onClick={handleClick}>Buscar</span>
+              </div>
+            </div>
+            <div className="custom-control custom-switch">
+              <input className="custom-control-input" type="checkbox" role="switch" id="dayOrNight" defaultChecked="true" onChange={handleChange}/>
+              <label className="custom-control-label" htmlFor="dayOrNight">{ isDay ? "Day" : "Night" }</label>
+            </div>
+          </div>
+        {
+          !loading ? 
+            <TableComponent headers={headers} data={data} hasError={hasError} errorMsg={errorMsg}></TableComponent>
+          : 
+            <p><em>Laoding...</em></p>
+        }
+        </search>
+      </div>
+    </section>
+  )
+}
+
+export default Weather;
