@@ -68,9 +68,9 @@ const CardComponent = (props) => {
                     <div>
                         <p>Temperature</p>
                         <div className='d-flex flex-column temperature-container'>
-                            <p>°F: Max. {weather[index].temperature.maximumF} - Min. {weather[index].temperature.minimumF}</p>
-                            <p>°C: Max. {weather[index].temperature.maximumC} - Min. {weather[index].temperature.minimumC}</p>
-                            <p>K: Max. {weather[index].temperature.maximumK} - Min. {weather[index].temperature.minimumK}</p>
+                            <p>°F: Max. <strong>{weather[index].temperature.maximumF}</strong> - Min. <strong>{weather[index].temperature.minimumF}</strong></p>
+                            <p>°C: Max. <strong>{weather[index].temperature.maximumC}</strong> - Min. <strong>{weather[index].temperature.minimumC}</strong></p>
+                            <p>K: Max. <strong>{weather[index].temperature.maximumK}</strong> - Min. <strong>{weather[index].temperature.minimumK}</strong></p>
                         </div>
                     </div>
                 </div>
