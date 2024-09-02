@@ -130,7 +130,7 @@ const Weather = () => {
         <h1 id="tabelLabel" >Weather forecast</h1>
         <p>This component demonstrates fetching data from the server.</p>
         <search className="d-flex flex-column">
-          <div className="d-flex align-items-center mb-4">
+          <div className="d-flex align-items-center">
             <div className="input-group flex-nowrap mr-2">
               <input className={!isInvalid ? "form-control": "form-control is-invalid"} id="search" type="search" placeholder="Buscar por ciudad" onKeyDown={({key, target}) => handlekeyDown(key, target)} />
               <div className="input-group-append">
@@ -142,7 +142,8 @@ const Weather = () => {
               <label className="custom-control-label" htmlFor="dayOrNight">{ isDay ? "Day" : "Night" }</label>
             </div>
           </div>
-        { !isInvalid ? <></> : <p id="invalid" className="invalid-feedback">Please provide a valid location.</p>} 
+        { !isInvalid ? <></> : <p id="invalid" className="invalid-feedback display">Please provide a valid location.</p>}
+        <div className='mb-4'></div>
         {
           !loading ? 
             <div>
