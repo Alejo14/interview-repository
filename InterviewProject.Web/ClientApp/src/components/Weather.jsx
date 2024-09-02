@@ -13,13 +13,15 @@ const Weather = () => {
   const [hasError, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [index, setIndex] = useState(0);
+  const [isInvalid, setIsInvalid] = useState(false);
 
   const validateLocation = (location) => {
+    setIsInvalid((invalid) => invalid = false);
     const regex = /(?:^|\s)[\s\\\/"\:';,.\-\_()*+{}[\]|'?¿¡!°¬\^#%&\$<>=]+(?:$|\s)/gi
     const newLocation = location.replace(regex, "");
     if(newLocation === "") {
-      alert("No location was entered");
-      return false;
+      setIsInvalid((invalid) => invalid = true);
+      return null;
     }
     return newLocation;
   }
@@ -130,16 +132,17 @@ const Weather = () => {
         <search className="d-flex flex-column">
           <div className="d-flex align-items-center mb-4">
             <div className="input-group flex-nowrap mr-2">
-              <input className="form-control" id="search" type="search" placeholder="Buscar por ciudad" onKeyDown={({key, target}) => handlekeyDown(key, target)} />
+              <input className={!isInvalid ? "form-control": "form-control is-invalid"} id="search" type="search" placeholder="Buscar por ciudad" onKeyDown={({key, target}) => handlekeyDown(key, target)} />
               <div className="input-group-append">
                 <span id="search-btn" className="input-group-text" onClick={handleClick}>Buscar</span>
               </div>
-            </div>
+            </div>            
             <div className="custom-control custom-switch">
               <input className="custom-control-input" type="checkbox" role="switch" id="dayOrNight" defaultChecked="true" onChange={handleChange}/>
               <label className="custom-control-label" htmlFor="dayOrNight">{ isDay ? "Day" : "Night" }</label>
             </div>
           </div>
+        { !isInvalid ? <></> : <p id="invalid" className="invalid-feedback">Please provide a valid location.</p>} 
         {
           !loading ? 
             <div>
